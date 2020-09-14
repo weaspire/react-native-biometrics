@@ -28,11 +28,15 @@ RCT_EXPORT_METHOD(isSensorAvailable:(RCTPromiseResolveBlock)resolve rejecter:(RC
 
     resolve(result);
   } else {
-    NSString *errorMessage = [NSString stringWithFormat:@"%@", la_error];
-    NSDictionary *result = @{
+  NSString *errorCode = [NSString stringWithFormat: @"%ld", (long)la_error.code];
+  NSString *errorMessage = [NSString stringWithFormat:@"%@", la_error];
+  NSDictionary *result = @{
       @"available": @(NO),
-      @"error": errorMessage
-    };
+      @"error": @{
+              @"code": errorCode,
+              @"message": errorMessage
+      }
+  };
 
     resolve(result);
   }
@@ -147,7 +151,7 @@ RCT_EXPORT_METHOD(createSignature: (NSDictionary *)params resolver:(RCTPromiseRe
         resolve(result);
       } else {
         NSString *message = [NSString stringWithFormat:@"Signature error: %@", error];
-        reject(@"signature_error", message, nil);
+        reject([NSString stringWithFormat: @"%ld", (long)error.code], message, error);
       }
     } else {
       NSString *message = [NSString stringWithFormat:@"Key not found: %@",[self keychainErrorToString:status]];
@@ -177,7 +181,7 @@ RCT_EXPORT_METHOD(simplePrompt: (NSDictionary *)params resolver:(RCTPromiseResol
         resolve(result);
       } else {
         NSString *message = [NSString stringWithFormat:@"%@", biometricError];
-        reject(@"biometric_error", message, nil);
+        reject([NSString stringWithFormat: @"%ld", (long)biometricError.code], message, biometricError);
       }
     }];
   });
