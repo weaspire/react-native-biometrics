@@ -155,7 +155,7 @@ RCT_EXPORT_METHOD(createSignature: (NSDictionary *)params resolver:(RCTPromiseRe
       }
     } else {
       NSString *message = [NSString stringWithFormat:@"Key not found: %@",[self keychainErrorToString:status]];
-      reject(@"storage_error", message, nil);
+      reject([NSString stringWithFormat: @"%ld", (long)status], message, nil);
     }
   });
 }
